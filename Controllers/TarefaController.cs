@@ -1,120 +1,105 @@
-using Microsoft.AspNetCore.Mvc;
-using TrilhaApiDesafio.Context;
-using TrilhaApiDesafio.Models;
+using TestesUnitarios.Desafio.Console.Services;
 
-namespace TrilhaApiDesafio.Controllers
+namespace TestesUnitarios.Desafio.Tests;
+
+public class ValidacoesListaTests
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class TarefaController : ControllerBase
+    private ValidacoesLista _validacoes = new ValidacoesLista();
+
+    [Fact]
+    public void DeveRemoverNumerosNegativosDeUmaLista()
     {
-        private readonly OrganizadorContext _context;
+        // Arrange
+        var lista = new List<int> { 5, -1, -8, 9 };
+        var resultadoEsperado = new List<int> { 5, 9 };
 
-        public TarefaController(OrganizadorContext context)
-        {
-            _context = context;
-        }
+        // Act
+        var resultado = _validacoes.RemoverNumerosNegativos(lista);
 
-        [HttpGet("{id}")]
-        public IActionResult ObterPorId(int id)
-        {
-            // TODO: Buscar o Id no banco utilizando o EF
-            var tarefa = _context.Tarefas.Find(id);
+        // Assert
+        Assert.Equal(resultadoEsperado, resultado);
+    }
 
-            // TODO: Validar o tipo de retorno. Se não encontrar a tarefa, retornar NotFound,
-            // caso contrário retornar OK com a tarefa encontrada
-            if (tarefa == null)
-                return NotFound();
+    [Fact]
+    public void DeveConterONumero9NaLista()
+    {
+        // Arrange
+        var lista = new List<int> { 5, -1, -8, 9 };
+        var numeroParaProcurar = 9;
 
-            return Ok(tarefa);
-        }
+        // Act
+        var resultado = _validacoes.ListaContemDeterminadoNumero(lista, numeroParaProcurar);
 
-        [HttpGet("ObterTodos")]
-        public IActionResult ObterTodos()
-        {
-            // TODO: Buscar todas as tarefas no banco utilizando o EF
-            var tarefas = _context.Tarefas.ToList();
+        // Assert
+        Assert.True(resultado);
+    }
 
-            return Ok(tarefas);
-        }
+    [Fact]
+    public void NaoDeveConterONumero10NaLista()
+    {
+        //TODO: Implementar método de teste
 
-        [HttpGet("ObterPorTitulo")]
-        public IActionResult ObterPorTitulo(string titulo)
-        {
-            // TODO: Buscar  as tarefas no banco utilizando o EF, que contenha o titulo recebido por parâmetro
-            // Dica: Usar como exemplo o endpoint ObterPorData
-            var tarefas = _context.Tarefas.Where(x => x.Titulo.Contains(titulo)).ToList();
+        // Arrange
+        var lista = new List<int> { 5, -1, -8, 9 };
+        var numeroParaProcurar = 10;
 
-            return Ok(tarefas);
-        }
+        // Act
+        var resultado = _validacoes.ListaContemDeterminadoNumero(lista, numeroParaProcurar);
 
+        // Assert
+        Assert.True(resultado);
+    }
 
-        [HttpGet("ObterPorData")]
-        public IActionResult ObterPorData(DateTime data)
-        {
-            var tarefa = _context.Tarefas.Where(x => x.Data.Date == data.Date);
-            return Ok(tarefa);
-        }
+    //TODO: Corrigir a anotação [Fact]
+    [Fact]
+    public void DeveMultiplicarOsElementosDaListaPor2()
+    {
+        //TODO: Implementar método de teste
 
-        [HttpGet("ObterPorStatus")]
-        public IActionResult ObterPorStatus(EnumStatusTarefa status)
-        {
-            // TODO: Buscar  as tarefas no banco utilizando o EF, que contenha o status recebido por parâmetro
-            // Dica: Usar como exemplo o endpoint ObterPorData
-            var tarefas = _context.Tarefas.Where(x => x.Status == status).ToList();
+        // Arrange
+        var lista = new List<int> { 5, 7, 8, 9 };
+        var resultadoEsperado = new List<int> { 10, 14, 16, 18 };
 
-            return Ok(tarefas);
-        }
+        // Act
+        var resultado = _validacoes.MultiplicarNumerosLista(lista, 2);
 
-        [HttpPost]
-        public IActionResult Criar(Tarefa tarefa)
-        {
-            // TODO: Adicionar a tarefa recebida no EF e salvar as mudanças (save changes)
-            _context.Tarefas.Add(tarefa);
-            _context.SaveChanges();
+        // Assert
+        Assert.Equal(resultadoEsperado, resultado);
+    }
 
-            return CreatedAtAction(nameof(ObterPorId), new { id = tarefa.Id }, tarefa);
-        }
+    [Fact]
+    public void DeveRetornar9ComoMaiorNumeroDaLista()
+    {
+        //TODO: Implementar método de teste
 
+        // Arrange
+        var lista = new List<int> { 5, -1, -8, 9 };
 
-        [HttpPut("{id}")]
-        public IActionResult Atualizar(int id, Tarefa tarefa)
-        {
-            // TODO: Atualizar as informações da variável tarefaBanco com a tarefa recebida via parâmetro
-            var tarefaBanco = _context.Tarefas.Find(id);
+        // Act
+        var resultado = _validacoes.RetornarMaiorNumeroLista(lista);
 
-            // TODO: Atualizar a variável tarefaBanco no EF e salvar as mudanças (save changes)
-            if (tarefaBanco != null)
-            {
-                tarefaBanco.Titulo = tarefa.Titulo;
-                tarefaBanco.Descricao = tarefa.Descricao;
-                tarefaBanco.Data = tarefa.Data;
-                tarefaBanco.Status = tarefa.Status;
+        // Assert
+        //TODO: Corrigir o Assert.Equal com base no retorno da chamada ao método
+        Assert.Equal("9", resultado.ToString());
+    }
 
-                _context.SaveChanges();
-            }
+    [Fact]
+    public void DeveRetornarOitoNegativoComoMenorNumeroDaLista()
+    {
+        //TODO: Implementar método de teste
 
-            return Ok();
-        }
+        // Arrange
+        var lista = new List<int> { 5, -1, -8, 9 };
 
+        // Act
+        var resultado = _validacoes.RetornarMenorNumeroLista(lista);
 
-        [HttpDelete("{id}")]
-        public IActionResult Deletar(int id)
-        {
-            // TODO: Remover a tarefa encontrada através do EF e salvar as mudanças (save changes)
-            var tarefaBanco = _context.Tarefas.Find(id);
-
-            if (tarefaBanco != null)
-            {
-                _context.Tarefas.Remove(tarefaBanco);
-                _context.SaveChanges();
-                return NoContent();
-            }
-
-            return NotFound();
-        }
-
+        // Assert
+        //TODO: Corrigir o Assert.Equal com base no retorno da chamada ao método
+        Assert.Equal("-8", resultado.ToString());
     }
 }
 
-  
+
+
+      
